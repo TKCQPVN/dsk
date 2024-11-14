@@ -72,11 +72,10 @@ body {
 
         .play-all-btn,
         .stop-all-btn {
-            background-color: #4CAF50;
+            background-color: #FF4C4C;
             color: white;
             padding: 10px 20px;
             border-radius: 5px;
-            margin-top: 20px;
             cursor: pointer;
             font-size: 16px;
             align-self: center;
@@ -85,7 +84,7 @@ body {
 
         .play-all-btn:hover,
         .stop-all-btn:hover {
-            background-color: #45a049;
+            background-color: #C70000;
         }
 
         .edit-container {
@@ -190,7 +189,7 @@ body {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             top: 50%; /* Đặt vị trí giữa màn hình */
             left: 50%; /* Đặt vị trí giữa màn hình */
-            transform: translate(-50%, +10%); /* Dịch chuyển để căn giữa */
+            transform: translate(-50%, -50%); /* Dịch chuyển để căn giữa */
         }
         .video-item {
             position: relative;
