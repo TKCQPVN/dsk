@@ -1,0 +1,206 @@
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 36px;
+            margin: 20px 0;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .tab {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .tab:hover {
+            background-color: #45a049;
+        }
+
+        .video-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1920px;
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .video-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-item h3 {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .video-item video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .play-all-btn,
+        .stop-all-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            align-self: center;
+            margin-right: 10px;
+        }
+
+        .play-all-btn:hover,
+        .stop-all-btn:hover {
+            background-color: #45a049;
+        }
+
+        .edit-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .edit-container input {
+            padding: 5px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .edit-container button {
+            padding: 5px 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .edit-container button:hover {
+            background-color: #45a049;
+        }
+
+        .video-selector {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .video-selector input {
+            padding: 5px;
+            font-size: 16px;
+            margin-right: 10px;
+            width: 60px;
+        }
+
+        @media (max-width: 1200px) {
+            .video-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .video-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .video-container {
+                grid-template-columns: 1fr;
+            }
+        }
+		
+		/* Kiểu cho phần số thứ tự và tiêu đề video */
+		.title-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			padding: 10px;
+			background-color: #4CAF50;
+			color: white;
+		}
+
+		.video-number {
+			font-weight: bold;
+			margin-right: 10px;
+			font-size: 18px;
+		}
+		
+		.control-bar {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		margin: 20px 0;
+		}
+
+		.control-bar button,
+		.control-bar input {
+			padding: 10px;
+			font-size: 16px;
+			border-radius: 5px;
+		}
+
+		.control-bar button:hover {
+			background-color: #45a049;
+		}
+
+		/* Style cho iframe */
+        .preview-iframe {
+            display: none;
+            position: fixed;
+            width: 1024px; /* Gấp đôi chiều rộng */
+            height: 768px; /* Gấp đôi chiều cao */
+            border: 1px solid #ccc;
+            z-index: 10;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            top: 50%; /* Đặt vị trí giữa màn hình */
+            left: 50%; /* Đặt vị trí giữa màn hình */
+            transform: translate(-50%, +10%); /* Dịch chuyển để căn giữa */
+        }
+        .video-item {
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .video-number {
+            margin-right: 10px;
+        }
+        .title-button {
+            position: relative;
+        }

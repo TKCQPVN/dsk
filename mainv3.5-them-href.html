@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Web Video Live Stream</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>DANH SÁCH CÁC KÊNH TRUYỀN HÌNH ĐỊA PHƯƠNG</h1>
+
+    <div class="tabs">
+        <div class="tab" onclick="showTab(0)">Tab 1</div>
+        <div class="tab" onclick="showTab(1)">Tab 2</div>
+        <div class="tab" onclick="showTab(2)">Tab 3</div>
+        <div class="tab" onclick="showTab(3)">Tab 4</div>
+        <div class="tab" onclick="showTab(4)">Tab 5</div>
+        <div class="tab" onclick="showTab(5)">HTV</div>
+        <div class="tab" onclick="showTab(6)">VTC</div>
+		<div class="tab" onclick="showTab(7)">Thiết yếu</div>
+    </div>
+
+    <div class="control-bar">
+        <button class="play-all-btn" onclick="playAllVideos()">Play All</button>
+        <button class="stop-all-btn" onclick="stopAllVideos()">Stop All</button>
+        <input type="number" id="video-index" placeholder="Số thứ tự (1-16)" min="1" max="16">
+        <button onclick="setVideoForEdit()">Chọn Video</button>
+        <input type="text" id="title-edit" placeholder="Sửa tiêu đề video">
+        <input type="text" id="link-edit" placeholder="Sửa link video">
+        <button onclick="updateVideo()">Cập nhật Video</button>
+    </div>
+
+    <div class="video-container" id="video-container">
+        <!-- Các video sẽ được tạo tự động bởi JavaScript -->
+    </div>
+
+    <!-- Thêm thư viện HLS.js -->
+	<script src="tabData.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+       
+        let currentTab = 0;
+
+        function showTab(tabIndex) {
+            currentTab = tabIndex;
+            const videoContainer = document.getElementById('video-container');
+            videoContainer.innerHTML = ''; // Xóa nội dung cũ
+
+            const videos = tabData[tabIndex];
+            videos.forEach((data, index) => {
+                const videoItem = document.createElement('div');
+                videoItem.classList.add('video-item');
+
+                // Số thứ tự video
+                const number = document.createElement('span');
+                number.classList.add('video-number');
+                number.innerText = index + 1;
+                videoItem.appendChild(number);
+
+                // Nút tiêu đề video
+                const titleButton = document.createElement('button');
+                titleButton.innerText = data.title || 'Chưa có tiêu đề';
+                titleButton.classList.add('title-button');
+                titleButton.onclick = () => {
+                    if (data.homepagelink) {
+                        window.open(data.homepagelink, '_blank');
+                    } else {
+                        alert("Không có liên kết trang chủ cho video này.");
+                    }
+                };
+
+                // Tạo iframe cho preview
+                const iframe = document.createElement('iframe');
+                iframe.src = data.homepagelink || '';
+                iframe.classList.add('preview-iframe');
+
+                // Hiển thị và ẩn iframe khi di chuột
+                titleButton.onmouseover = (event) => {
+                    if (data.homepagelink) {
+                        iframe.style.display = 'block';
+                        iframe.style.top = `${event.clientY}px`;
+                        iframe.style.left = `${event.clientX}px`;
+                    }
+                };
+                titleButton.onmouseout = () => {
+                    setTimeout(() => {
+                        if (!iframe.matches(':hover')) {
+                            iframe.style.display = 'none';
+                        }
+                    }, 200);
+                };
+
+                // Giữ iframe khi di chuột vào nó
+                iframe.onmouseover = () => iframe.style.display = 'block';
+                iframe.onmouseout = () => iframe.style.display = 'none';
+
+                videoItem.appendChild(titleButton);
+                videoItem.appendChild(iframe);
+
+                // Phần video
+                const video = document.createElement('video');
+                video.setAttribute('controls', true);
+                video.setAttribute('id', `video-${index + 1}`);
+
+                if (Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(data.link);
+                    hls.attachMedia(video);
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = data.link;
+                } else {
+                    video.innerHTML = 'Trình duyệt của bạn không hỗ trợ HLS!';
+                }
+
+                videoItem.appendChild(video);
+                videoContainer.appendChild(videoItem);
+            });
+        }
+
+        function updateVideo() {
+            const title = document.getElementById('title-edit').value;
+            const link = document.getElementById('link-edit').value;
+            const videoIndex = parseInt(document.getElementById('video-index').value) - 1;
+
+            if (videoIndex >= 0 && videoIndex < 16) {
+                if (title) tabData[currentTab][videoIndex].title = title;
+                if (link) tabData[currentTab][videoIndex].link = link;
+
+                localStorage.setItem('tabData', JSON.stringify(tabData));
+                showTab(currentTab);
+            } else {
+                alert('Vui lòng điền đầy đủ thông tin và chọn số thứ tự hợp lệ!');
+            }
+        }
+
+        window.onload = () => {
+            const savedData = localStorage.getItem('tabData');
+            if (savedData) {
+                tabData = JSON.parse(savedData);
+            }
+            showTab(0);
+        };
+
+        function playAllVideos() {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => video.play());
+        }
+
+        function stopAllVideos() {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => video.pause());
+        }
+        
+        window.onload = () => showTab(0);
+    </script>
+</body>
+</html>
+
+
