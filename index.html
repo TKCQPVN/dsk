@@ -16,8 +16,7 @@
         <div class="tab" onclick="showTab(3)">Tab 4</div>
         <div class="tab" onclick="showTab(4)">Tab 5</div>
         <div class="tab" onclick="showTab(5)">HTV</div>
-        <div class="tab" onclick="showTab(6)">VTC</div>
-		<div class="tab" onclick="showTab(7)">Thiết yếu</div>
+        <div class="tab" onclick="showTab(6)">Thiết yếu</div>
     </div>
 
     <div class="control-bar">
@@ -28,6 +27,8 @@
         <input type="text" id="title-edit" placeholder="Sửa tiêu đề video">
         <input type="text" id="link-edit" placeholder="Sửa link video">
         <button onclick="updateVideo()">Cập nhật Video</button>
+		<button onclick="clearStorage()">Xóa dữ liệu vừa cập nhật</button>
+
     </div>
 
     <div class="video-container" id="video-container">
@@ -75,20 +76,34 @@
                 iframe.classList.add('preview-iframe');
 
                 // Hiển thị và ẩn iframe khi di chuột
-                titleButton.onmouseover = (event) => {
-                    if (data.homepagelink) {
-                        iframe.style.display = 'block';
-                        iframe.style.top = `${event.clientY}px`;
-                        iframe.style.left = `${event.clientX}px`;
-                    }
-                };
-                titleButton.onmouseout = () => {
-                    setTimeout(() => {
-                        if (!iframe.matches(':hover')) {
-                            iframe.style.display = 'none';
-                        }
-                    }, 200);
-                };
+               
+				titleButton.onmouseover = (event) => {
+					if (data.homepagelink) {
+						const windowWidth = window.innerWidth;
+						const buttonPosition = titleButton.getBoundingClientRect();
+						
+						iframe.style.display = 'block';
+
+						if (buttonPosition.left < windowWidth / 2) {
+							// Nút ở bên trái, hiển thị iframe ở giữa nửa bên phải
+							iframe.style.top = `${buttonPosition.top}px`;
+							iframe.style.left = `${windowWidth * 0.75}px`; // Giữa bên phải màn hình
+						} else {
+							// Nút ở bên phải, hiển thị iframe ở giữa nửa bên trái
+							iframe.style.top = `${buttonPosition.top}px`;
+							iframe.style.left = `${windowWidth * 0.25}px`; // Giữa bên trái màn hình
+						}
+					}
+				};
+
+				titleButton.onmouseout = () => {
+					setTimeout(() => {
+						if (!iframe.matches(':hover')) {
+							iframe.style.display = 'none';
+						}
+					}, 200);
+				};
+
 
                 // Giữ iframe khi di chuột vào nó
                 iframe.onmouseover = () => iframe.style.display = 'block';
@@ -118,28 +133,34 @@
         }
 
         function updateVideo() {
-            const title = document.getElementById('title-edit').value;
-            const link = document.getElementById('link-edit').value;
-            const videoIndex = parseInt(document.getElementById('video-index').value) - 1;
+			const title = document.getElementById('title-edit').value;
+			const link = document.getElementById('link-edit').value;
+			const videoIndex = parseInt(document.getElementById('video-index').value) - 1;
 
-            if (videoIndex >= 0 && videoIndex < 16) {
-                if (title) tabData[currentTab][videoIndex].title = title;
-                if (link) tabData[currentTab][videoIndex].link = link;
+			// Kiểm tra chỉ mục hợp lệ và dữ liệu đầu vào
+			if (videoIndex >= 0 && videoIndex < 16) {
+				if (title) tabData[currentTab][videoIndex].title = title;
+				if (link) tabData[currentTab][videoIndex].link = link;
 
-                localStorage.setItem('tabData', JSON.stringify(tabData));
-                showTab(currentTab);
-            } else {
-                alert('Vui lòng điền đầy đủ thông tin và chọn số thứ tự hợp lệ!');
-            }
-        }
+				// Lưu tabData vào localStorage
+				localStorage.setItem('tabData', JSON.stringify(tabData));
+
+				// Cập nhật giao diện
+				showTab(currentTab);
+			} else {
+				alert('Vui lòng điền đầy đủ thông tin và chọn số thứ tự hợp lệ!');
+			}
+		}
+
 
         window.onload = () => {
-            const savedData = localStorage.getItem('tabData');
-            if (savedData) {
-                tabData = JSON.parse(savedData);
-            }
-            showTab(0);
-        };
+			const savedData = localStorage.getItem('tabData');
+			if (savedData) {
+				tabData = JSON.parse(savedData);
+			}
+			showTab(0);
+		};
+
 
         function playAllVideos() {
             const videos = document.querySelectorAll('video');
@@ -152,6 +173,12 @@
         }
         
         window.onload = () => showTab(0);
+		
+		 function clearStorage() {
+			localStorage.removeItem('tabData');
+			alert('Dữ liệu đã được xóa khỏi localStorage!');
+			location.reload(); // Tải lại trang để áp dụng dữ liệu mới
+		}
     </script>
 </body>
 </html>
